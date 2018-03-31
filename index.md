@@ -35,24 +35,25 @@ reveal-md demo
 
 ## Features
 
-* Markdown
-* Theme
-* Highlight Theme
-* Custom Slide Separators
-* Custom Slide Attributes
-* reveal-md Options
-* Reveal.js Options
-* Speaker Notes
-* YAML Front Matter
-* Live Reload
-* Custom Scripts
-* Custom CSS
-* Pre-process Markdown
-* Print to PDF
-* Static Website
-* Disable Auto-open Browser
-* Directory Listing
-* Custom Port
+* [Markdown](#markdown)
+* [Theme](#theme)
+* [Highlight Theme](#highlight-theme)
+* [Custom Slide Separators](#custom-slide-separators)
+* [Custom Slide Attributes](#custom-slide-attributes)
+* [reveal-md Options](#reveal-md-options)
+* [Reveal.js Options](#revealjs-options)
+* [Speaker Notes](#speaker-notes)
+* [YAML Front Matter](#yaml-front-matter)
+* [Live Reload](#live-reload)
+* [Custom Scripts](#custom-scripts)
+* [Custom CSS](#custom-css)
+* [Pre-process Markdown](#pre-process-markdown)
+* [Print to PDF](#print-to-pdf)
+* [Static Website](#static-website)
+* [Disable Auto-open Browser](#disable-auto-open-browser)
+* [Directory Listing](#directory-listing)
+* [Custom Port](#custom-port)
+* [Custom Template](#custom-template)
 
 ### Markdown
 
@@ -84,10 +85,10 @@ reveal-md slides.md --theme solarized
 
 See [available themes](https://github.com/hakimel/reveal.js/tree/master/css/theme).
 
-Override reveal theme with a custom one. In this example, the file must be at `./theme/my-custom.css`:
+Override reveal theme with a custom one. In this example, the file is at `./theme/my-custom.css`:
 
 ``` bash
-reveal-md slides.md --theme my-custom
+reveal-md slides.md --theme theme/my-custom.css
 ```
 
 Override reveal theme with a remote one (use rawgit.com because the url must allow cross-site access):
@@ -167,7 +168,7 @@ You can use the [speaker notes](https://github.com/hakimel/reveal.js#speaker-not
 
 ### YAML Front matter
 
-You can set markdown options and revealoptions specific to your pressentation in the .md file with YAML
+You can set markdown options and revealoptions specific to your presentation in the .md file with YAML
 front matter header Jekyll style.
 
 ```
@@ -216,7 +217,7 @@ reveal-md slides.md --css style.css,another-style.css
 
 `reveal-md` can be given a markdown preprocessor script via the `--preprocessor` (or
 `-P`) option. This can be useful to implement custom tweaks on the document
-format without having to dive into the guys of the Markdown parser.
+format without having to dive into the guts of the Markdown parser.
 
 For example, to have headers automatically create new slides, one could have
 the script `preproc.js`:
@@ -225,11 +226,13 @@ the script `preproc.js`:
 // headings trigger a new slide
 // headings with a caret (e.g., '##^ foo`) trigger a new vertical slide
 module.exports = (markdown, options) => {
-  return markdown.split('\n').map((line, index) => {
-    if(!/^#/.test(line) || index === 0) return line;
-    const is_vertical = /#\^/.test(line);
-    return (is_vertical ? '\n----\n\n' : '\n---\n\n') + line.replace('#^', '#');
-  }).join('\n');
+  return new Promise((resolve, reject) => {
+    return resolve(markdown.split('\n').map((line, index) => {
+      if(!/^#/.test(line) || index === 0) return line;
+      const is_vertical = /#\^/.test(line);
+      return (is_vertical ? '\n----\n\n' : '\n---\n\n') + line.replace('#^', '#');
+    }).join('\n'));
+  });
 };
 ```
 
@@ -248,6 +251,8 @@ This will create a PDF from the provided Markdown file and saves a PDF file:
 ``` bash
 reveal-md slides.md --print slides.pdf
 ```
+
+Alternatively, you can append `?print-pdf` to the url in the browser (make sure to remove the `#/` or `#/1` hash). Then print the slides using the brower's (not the native) print dialog. This seems to work in Chrome.
 
 ### Static Website
 
@@ -288,6 +293,20 @@ Override port (default: `1948`):
 reveal-md slides.md --port 8888
 ```
 
+### Custom Template
+
+Override reveal.js HTML template ([default template](https://github.com/webpro/reveal-md/blob/master/lib/template/reveal.html)):
+
+``` bash
+reveal-md slides.md --template my-reveal-template.html
+```
+
+Override listing HTML template ([default template](https://github.com/webpro/reveal-md/blob/master/lib/template/listing.html)):
+
+``` bash
+reveal-md slides.md --listing-template my-listing-template.html
+```
+
 ## Related Projects & Alternatives
 
 * [Slides](https://slides.com/) is a place for creating, presenting and sharing slide decks.
@@ -295,6 +314,7 @@ reveal-md slides.md --port 8888
 * [Tools](https://github.com/hakimel/reveal.js/wiki/Plugins,-Tools-and-Hardware#tools) in the Plugins, Tools and Hardware section of Reveal.js.
 * [Org-Reveal](https://github.com/yjwen/org-reveal) exports Org-mode contents to Reveal.js HTML presentation.
 * [DeckTape](https://github.com/astefanutti/decktape) is a high-quality PDF exporter for HTML5 presentation frameworks.
+* [GitPitch](https://gitpitch.com) generates slideshows from PITCHME.md found in hosted Git repos.
 
 ## License
 
