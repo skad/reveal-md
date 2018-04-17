@@ -9,19 +9,19 @@ title: reveal-md
 
 ## Installation
 
-``` bash
+```bash
 npm install -g reveal-md
 ```
 
 ## Usage
 
-``` bash
+```bash
 reveal-md path/to/my/slides.md
 ```
 
 This starts a local server and opens your Markdown file as a reveal.js presentation in the default browser. Remote resources are also possible:
 
-``` bash
+```bash
 reveal-md https://raw.githubusercontent.com/webpro/reveal-md/master/demo/a.md
 ```
 
@@ -29,7 +29,7 @@ reveal-md https://raw.githubusercontent.com/webpro/reveal-md/master/demo/a.md
 
 Get a quick preview with a few demo decks:
 
-``` bash
+```bash
 reveal-md demo
 ```
 
@@ -59,7 +59,7 @@ reveal-md demo
 
 The Markdown feature of reveal.js is awesome, and has an easy (and configurable) syntax to separate slides. Use three dashes surrounded by two blank lines (`\n---\n`). Example:
 
-``` text
+```text
 # Title
 
 * Point 1
@@ -72,14 +72,13 @@ The Markdown feature of reveal.js is awesome, and has an easy (and configurable)
 > Best quote ever.
 
 Note: speaker notes FTW!
-
 ```
 
 ### Theme
 
 Override theme (default: `black`):
 
-``` bash
+```bash
 reveal-md slides.md --theme solarized
 ```
 
@@ -87,13 +86,13 @@ See [available themes](https://github.com/hakimel/reveal.js/tree/master/css/them
 
 Override reveal theme with a custom one. In this example, the file is at `./theme/my-custom.css`:
 
-``` bash
+```bash
 reveal-md slides.md --theme theme/my-custom.css
 ```
 
 Override reveal theme with a remote one (use rawgit.com because the url must allow cross-site access):
 
-``` bash
+```bash
 reveal-md slides.md --theme https://rawgit.com/puzzle/pitc-revealjs-theme/master/theme/puzzle.css
 ```
 
@@ -101,7 +100,7 @@ reveal-md slides.md --theme https://rawgit.com/puzzle/pitc-revealjs-theme/master
 
 Override highlight theme (default: `zenburn`):
 
-``` bash
+```bash
 reveal-md slides.md --highlight-theme github
 ```
 
@@ -111,13 +110,13 @@ See [available themes](https://github.com/isagalaev/highlight.js/tree/master/src
 
 Override slide separator (default: `\n---\n`):
 
-``` bash
+```bash
 reveal-md slides.md --separator "^\n\n\n"
 ```
 
 Override vertical/nested slide separator (default: `\n----\n`):
 
-``` bash
+```bash
 reveal-md slides.md --vertical-separator "^\n\n"
 ```
 
@@ -127,7 +126,7 @@ You can use the [reveal.js slide attributes](https://github.com/hakimel/reveal.j
 
 If you want yor second slide to have a png background:
 
-``` text
+```text
 # slide1
 
 This slide has no background image.
@@ -144,7 +143,7 @@ This one does!
 
 You can define options similar to command-line options in a `reveal-md.json` file that you should put in the root directory of the Markdown files. They'll be picked up automatically. Example:
 
-``` json
+```json
 {
   "separator": "^\n\n\n",
   "verticalSeparator": "^\n\n"
@@ -155,7 +154,7 @@ You can define options similar to command-line options in a `reveal-md.json` fil
 
 You can define Reveal.js [options](https://github.com/hakimel/reveal.js#configuration) in a `reveal.json` file that you should put in the root directory of the Markdown files. They'll be picked up automatically. Example:
 
-``` json
+```json
 {
   "controls": true,
   "progress": true
@@ -201,7 +200,7 @@ to reload the browser.
 
 Inject custom scripts into the page:
 
-``` bash
+```bash
 reveal-md slides.md --scripts script.js,another-script.js
 ```
 
@@ -209,7 +208,7 @@ reveal-md slides.md --scripts script.js,another-script.js
 
 Inject custom CSS into the page:
 
-``` bash
+```bash
 reveal-md slides.md --css style.css,another-style.css
 ```
 
@@ -227,11 +226,16 @@ the script `preproc.js`:
 // headings with a caret (e.g., '##^ foo`) trigger a new vertical slide
 module.exports = (markdown, options) => {
   return new Promise((resolve, reject) => {
-    return resolve(markdown.split('\n').map((line, index) => {
-      if(!/^#/.test(line) || index === 0) return line;
-      const is_vertical = /#\^/.test(line);
-      return (is_vertical ? '\n----\n\n' : '\n---\n\n') + line.replace('#^', '#');
-    }).join('\n'));
+    return resolve(
+      markdown
+        .split('\n')
+        .map((line, index) => {
+          if (!/^#/.test(line) || index === 0) return line;
+          const is_vertical = /#\^/.test(line);
+          return (is_vertical ? '\n----\n\n' : '\n---\n\n') + line.replace('#^', '#');
+        })
+        .join('\n')
+    );
   });
 };
 ```
@@ -244,15 +248,13 @@ $ reveal-md --preprocessor preproc.js slides.md
 
 ### Print to PDF
 
-*Requires phantomjs to be installed (preferably globally)*
-
 This will create a PDF from the provided Markdown file and saves a PDF file:
 
-``` bash
+```bash
 reveal-md slides.md --print slides.pdf
 ```
 
-Alternatively, you can append `?print-pdf` to the url in the browser (make sure to remove the `#/` or `#/1` hash). Then print the slides using the brower's (not the native) print dialog. This seems to work in Chrome.
+Alternatively, you can append `?print-pdf` to the url from the command-line or in the browser (make sure to remove the `#/` or `#/1` hash). Then print the slides using the brower's (not the native) print dialog. This seems to work in Chrome.
 
 ### Static Website
 
@@ -267,7 +269,7 @@ reveal-md slides.md --static _site
 
 Disable to automatically open your web browser:
 
-``` bash
+```bash
 reveal-md slides.md --disable-auto-open
 ```
 
@@ -275,13 +277,13 @@ reveal-md slides.md --disable-auto-open
 
 Show (recursive) directory listing of Markdown files:
 
-``` bash
+```bash
 reveal-md dir/
 ```
 
 Show directory listing of Markdown files in current directory:
 
-``` bash
+```bash
 reveal-md
 ```
 
@@ -289,7 +291,7 @@ reveal-md
 
 Override port (default: `1948`):
 
-``` bash
+```bash
 reveal-md slides.md --port 8888
 ```
 
@@ -297,13 +299,13 @@ reveal-md slides.md --port 8888
 
 Override reveal.js HTML template ([default template](https://github.com/webpro/reveal-md/blob/master/lib/template/reveal.html)):
 
-``` bash
+```bash
 reveal-md slides.md --template my-reveal-template.html
 ```
 
 Override listing HTML template ([default template](https://github.com/webpro/reveal-md/blob/master/lib/template/listing.html)):
 
-``` bash
+```bash
 reveal-md slides.md --listing-template my-listing-template.html
 ```
 
